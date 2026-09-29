@@ -1,27 +1,30 @@
 
 
+// Imports
+import dotenv from "dotenv";
+import app from "./app.js";
+import connectDB from "./config/db.js";
 
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+dotenv.config();
 
-const app = express();
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// test route
-app.get("/" ,(req ,res) => {
-    res.json({
-        message: "Interview AI API is running!",
-        status: "sucess"
-    });
-});
-
-// start server
+// PORT setup
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-})
+// Start the backend server
+const startServer = async () => {
+  try {
+    // Connect to MongoDB 
+    await connectDB();
+
+    // Start listening for incoming HTTP requests
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Server startup failed:", error.message);
+    process.exit(1);
+  }
+};
+
+// Run the server startup function
+startServer();
